@@ -105,6 +105,16 @@ As regras permitem executar apenas uma dessas tarefas por autorização; cada ta
 - O teste funcional com credenciais será marcado como limitado até existir comando documentado para subir/resetar o Supabase local e contas locais com `app_metadata.role`.
 - Após comandos passarem nesta máquina, documentá-los em `AGENTS.md`; antes disso, não tratá-los como comandos confirmados.
 
+## Ajuste — Login fixo na altura da janela (CA-11)
+
+Status: aprovado pelo usuário em 19/10/2026.
+
+- `.login-layout` usa altura igual à da janela (`100svh`, com `100vh` como fallback) e `overflow: hidden`, no lugar da altura mínima de 820px herdada do `layout.md`.
+- `.login-hero` e `.login-panel` ocupam a linha da grade com `min-height: 0` e `overflow: hidden`; nenhuma coluna rola.
+- Espaçamentos verticais, altura de campos e botão e tamanhos de título usam `clamp()` com unidades `vh`, para encolher em janelas baixas e manter os valores atuais em janelas altas.
+- Em telas estreitas (até 50rem) o layout empilhado é mantido como está.
+- Somente `frontend/src/styles/styles.css` muda. Validação: typecheck, build e medição no navegador de `scrollHeight` contra `clientHeight` da página e das duas colunas em 1366×560, 1366×640, 1280×720 e 1920×960, com mensagem de erro visível.
+
 ## Riscos e pendências conhecidas
 
 - O login real não poderá ser demonstrado sem Supabase local em execução e usuários locais preparados; este plano não acessará o projeto remoto.

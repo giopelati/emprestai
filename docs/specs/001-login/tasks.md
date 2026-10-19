@@ -13,6 +13,7 @@
 - [x] T03 — Autenticação e papel confiável
 - [x] T04 — Restauração, proteção e saída
 - [x] T05 — Verificação integrada e documentação operacional
+- [x] T06 — Login fixo na altura da janela
 
 ## T01 — Base React e apresentação responsiva do Login
 
@@ -53,3 +54,11 @@
 **Arquivos previstos:** arquivos do Login somente se a validação revelar defeito, `AGENTS.md` e `handoff.md`.  
 **Verificação:** typecheck e build comprovados, estado Git comparado e limitações do Supabase local explicitadas.  
 **Limite do commit:** verificação e documentação; sem ampliar escopo.
+
+## T06 — Login fixo na altura da janela
+
+**Critérios:** CA-02, CA-11  
+**Objetivo:** fazer o Login ocupar exatamente a altura da janela em telas amplas, sem rolagem na página nem nas colunas, compactando os espaçamentos verticais.  
+**Arquivos previstos:** `frontend/src/styles/styles.css` e os documentos desta spec.  
+**Verificação:** typecheck, build e medição de rolagem no navegador nas alturas listadas no plano, com mensagem de erro visível.  
+**Limite do commit:** apenas layout do Login; sem mudança de comportamento do formulário ou da autenticação.

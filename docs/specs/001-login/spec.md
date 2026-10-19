@@ -53,6 +53,7 @@ Permitir que colaboradores e pessoas de Operações iniciem uma sessão segura e
 - A área de apresentação deve conter marca, mensagem principal, resumo e as três estatísticas: `3 itens por pessoa`, `14 dias de prazo` e `0 linhas para preencher`.
 - O formulário deve conter título `Entrar`, campos `E-mail` e `Senha`, ação primária `Entrar`, orientação para Operações e nota sobre privacidade dos empréstimos.
 - Em telas estreitas, usar uma única coluna, preservar o formulário como conteúdo principal e reduzir a área institucional sem criar rolagem horizontal.
+- Em telas amplas, o Login ocupa exatamente a altura da janela e é fixo: nem a página nem nenhuma das colunas rola. O conteúdo se compacta verticalmente para caber.
 - Estados de foco devem ser claramente visíveis; estado desabilitado deve ser perceptível sem depender somente de cor.
 - Não usar pacote externo de design system, fonte ou ícones neste incremento.
 
@@ -121,6 +122,13 @@ Permitir que colaboradores e pessoas de Operações iniciem uma sessão segura e
 **Dado** que existe uma sessão autenticada  
 **Quando** a pessoa aciona `Sair` em uma área protegida  
 **Então** a sessão é encerrada e o Login volta a ser exibido.
+
+### CA-11 — Login fixo em telas amplas
+
+**Dado** o Login em uma janela com largura acima de 50rem e altura a partir de 560px  
+**Quando** a tela é exibida, inclusive com uma mensagem de erro do formulário visível  
+**Então** nem a página nem a área de apresentação nem a área do formulário possuem rolagem vertical  
+**E** marca, mensagem principal, estatísticas, campos, ação `Entrar`, orientação para Operações e nota de privacidade permanecem visíveis.
 
 ## Fora do escopo
 
