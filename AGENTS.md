@@ -15,12 +15,17 @@ Negócio em `docs/PRD.md`. Stack decidida em `docs/adr/001-stack.md`.
 
 ## Comandos
 
-Só entram aqui comandos que já foram executados com sucesso nesta máquina. Nenhum comando de projeto foi confirmado até agora.
+Só entram aqui comandos que já foram executados com sucesso nesta máquina.
 
+- instalar dependências: `npm install`.
+- verificar tipos do frontend: `npm run typecheck`.
+- buildar o frontend: `npm run build`.
+- verificar tipos do backend: `npm run typecheck --workspace backend`.
+- buildar o backend: `npm run build --workspace backend`.
+- rodar o backend buildado: `npm run start --workspace backend` (porta `PORT`, padrão 3000).
 - subir o banco local: não documentado.
 - rodar o projeto: não documentado.
 - rodar os testes: não documentado.
-- buildar: não documentado.
 
 ## Ambiente
 
@@ -38,12 +43,12 @@ Avise o usuário antes de qualquer `git push`.
 
 ## Estado atual do projeto
 
-- O repositório contém o PRD, o ADR de stack, o `layout.md`, os diretórios `frontend/` e `backend/` e exemplos de variáveis de ambiente.
-- O diretório `rules/` existe, mas `rules/restrictions.md` ainda não existe.
-- `docs/specs/` ainda não existe.
-- Ainda não há código de aplicação, testes, migrations, manifests de pacotes, lockfile, scripts de projeto ou configuração de CI.
-- O monorepo com npm workspaces para `frontend` e `backend` está planejado, mas ainda não foi inicializado.
-- A fronteira entre frontend, Nest e Supabase ainda não foi decidida.
-- A estratégia de migrations ainda não foi decidida.
+- O monorepo usa npm workspaces e possui manifestos e lockfile na raiz.
+- `docs/specs/001-login/` contém spec, plano aprovado e tarefas da primeira feature.
+- O frontend React/Vite implementa Login responsivo, validação, Supabase Auth, papel confiável, restauração de sessão, shells protegidos e logout.
+- A autenticação fala diretamente com Supabase Auth; dados e regras de empréstimos permanecem fora desta feature.
+- O backend possui aplicação Nest mínima com `GET /health` → `{ "status": "ok" }`; ainda sem regras de negócio.
+- Ainda não há testes automatizados, migrations, estratégia de migration ou configuração de CI.
+- A subida do Supabase local e a criação de usuários locais por papel ainda não estão documentadas.
 
 ## Procedimentos
