@@ -68,7 +68,7 @@ Estrutura MVC em `backend/src/`:
 - `pages/CatalogoPage.tsx`: grade de cards (foto 4:3 com `width=800`
   `height=600`, categoria, nome, patrimônio, pill, botão conforme CA-03),
   confirmação no card (L6), mensagens em região `role="status"` / `role="alert"`,
-  link `Fotos: Pexels`.
+  link `Fotos: Openverse` (era `Fotos: Pexels` até o C5 da spec 002).
 - `pages/MeusEmprestimosPage.tsx`: resumo, lista ordenada, `Em atraso`,
   estado vazio com `Ir ao catálogo`.
 - Estilos no `styles.css` existente, com as cores de situação do `layout.md`.

@@ -23,10 +23,13 @@ Nenhuma biblioteca de aplicação nova. `supabase` (CLI, ADR-002) e `jest`
 
 Scripts Node sem dependência (`fetch`, `crypto`, `fs`):
 
-- `preparar.mjs`: busca no Pexels (`orientation=landscape`), descarta pelo
-  `alt` o que indica pessoa, marca ou texto, pula ids usados ou reprovados,
-  baixa `src.original` com `fit=crop&w=800&h=600` e recusa o arquivo se o
-  cabeçalho JPEG não disser 800×600. Gera folha de revisão HTML no cache
+- `preparar.mjs` (revisto pelo C5): busca no Openverse (`source=flickr`,
+  `license=cc0,pdm,by`, `aspect_ratio=wide`), fica só com originais em 4:3,
+  descarta pelo título e pelas tags o que indica pessoa, marca ou texto, pula
+  ids usados ou reprovados, baixa o tamanho `_c` do Flickr (800 px no lado
+  maior, ou seja, 800×600 numa foto 4:3) e recusa o arquivo se o cabeçalho
+  JPEG não disser 800×600. Se o termo da lista não der candidata, tenta termos
+  reserva da categoria. Gera folha de revisão HTML no cache
   (`.cache/`, fora do Git).
 - `revisar.mjs`: revisão humana, só em TTY. Grava aprovação com revisor e data
   em `supabase/dados/creditos-imagens.json` e reprovação com motivo em
@@ -37,8 +40,7 @@ Scripts Node sem dependência (`fetch`, `crypto`, `fs`):
 - Produção: `--producao` lê `PRODUCAO_SUPABASE_*` de `.env.producao`, exige TTY
   e que a pessoa digite a referência do projeto.
 
-As fotos não vão para o Git (licença do Pexels proíbe redistribuir como banco
-de imagens); o crédito, a URL de download e o hash vão, e permitem baixar de
+As fotos não vão para o Git (o repositório não é banco de imagens); o crédito, a URL de download e o hash vão, e permitem baixar de
 novo a mesma foto.
 
 ### Migration (T02)
@@ -85,7 +87,7 @@ Jest no workspace `backend`, contra o Supabase local:
 
 ## Riscos
 
-- Sem `PEXELS_API_KEY`, T05 não roda. A chave é pessoal e só a dona da conta
-  cria.
-- O Pexels pode mudar o CDN; nesse caso o envio falha (o tamanho é conferido),
-  em vez de publicar imagem errada.
+- O Openverse às vezes demora a responder (504): a busca tenta de novo 3 vezes.
+- O Flickr pode não ter o tamanho `_c` de fotos antigas; nesse caso a
+  candidata é descartada (o tamanho é conferido), em vez de publicar imagem
+  errada.

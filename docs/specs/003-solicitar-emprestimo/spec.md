@@ -31,7 +31,7 @@ de devolução.
 |---|---|---|---|
 | C1 | Briefing, item 4: "Quem já tem 5 empréstimos em aberto não pode solicitar outro" | PRD: "Cada pessoa pode estar com no máximo 3 itens ao mesmo tempo"; Login (spec 001) já anuncia `3 itens por pessoa` | Limite de **3**. Regra de negócio é do PRD; o briefing é pedido e não muda o PRD. |
 | C2 | Briefing, item 3: devolução prevista "14 dias úteis depois" | PRD: "O prazo padrão de devolução é de 14 dias"; Login anuncia `14 dias de prazo` | **14 dias corridos**. O PRD não fala em dias úteis, e dias úteis exigiriam um calendário de feriados que nenhuma fonte define. |
-| C3 | Briefing, item 9: catálogo "sem rodapé nem texto de crédito" | Contrato da skill: a tela que exibe as fotos mostra "Fotos: Pexels" com link, exigência das diretrizes da API do Pexels | Mantido **um** link `Fotos: Pexels` abaixo da grade, sem outro rodapé. O nome do fotógrafo fica só no atributo `title` da foto (aparece ao passar o mouse), sem texto visível no card. É o mínimo que cumpre as diretrizes e deixa o catálogo limpo. |
+| C3 | Briefing, item 9: catálogo "sem rodapé nem texto de crédito" | Contrato da skill: a tela que exibe as fotos mostra "Fotos: Pexels" com link, exigência das diretrizes da API do Pexels | Mantido **um** link `Fotos: Pexels` abaixo da grade, sem outro rodapé. O nome do fotógrafo fica só no atributo `title` da foto (aparece ao passar o mouse), sem texto visível no card. É o mínimo que cumpre as diretrizes e deixa o catálogo limpo. Com o C5 da spec 002, o link passou a ser `Fotos: Openverse` e o `title` inclui a licença (exigência da CC BY). |
 
 ## Lacunas decididas
 
@@ -72,7 +72,7 @@ Sucesso na tela: `Empréstimo registrado. Devolva até DD/MM/AAAA.`
 
 **Dado** o catálogo ou `Meus empréstimos` com fotos  
 **Quando** a tela é exibida  
-**Então** há um link `Fotos: Pexels` para `https://www.pexels.com`, cada foto traz o fotógrafo no atributo `title`, e não há outro rodapé ou bloco de crédito.
+**Então** há um link `Fotos: Openverse` para `https://openverse.org`, cada foto traz o fotógrafo e a licença no atributo `title`, e não há outro rodapé ou bloco de crédito.
 
 ### CA-03 — Ação conforme a situação
 

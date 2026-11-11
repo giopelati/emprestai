@@ -36,7 +36,18 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 - Passos: `npm run imagens:preparar` → `npm run imagens:revisar` (pessoa) →
   repetir até 12 aprovadas → `npm run imagens:enviar` → commit de
   `supabase/dados/creditos-imagens.json` e `supabase/dados/imagens-rejeitadas.json`.
-- Estado: [ ] pendente — falta `PEXELS_API_KEY`.
+- Estado: [ ] pendente — revisão humana (`npm run imagens:revisar`).
+
+## T07 — Fonte Openverse (conflito C5)
+
+- CAs: CA-03, CA-04, CA-05
+- Arquivos: `skills/imagens-equipamentos/**`, `.env.example`, `rules/secrets.md`,
+  `scripts/guardas/pre-commit.mjs`, `backend/test/**`,
+  `frontend/src/components/CreditoFotos.tsx` (substitui `CreditoPexels.tsx`),
+  `frontend/src/pages/CatalogoPage.tsx`, `frontend/src/pages/MeusEmprestimosPage.tsx`,
+  `frontend/src/styles/styles.css`.
+- Feita antes de T05, que passa a usar o Openverse.
+- Estado: [ ] pendente.
 
 ## T06 — Produção (pessoa)
 
