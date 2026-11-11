@@ -1,5 +1,7 @@
 # Entrega da prática
 
+> **Atualização 11/11/2026 (conflito C5 da spec 002):** o Pexels suspendeu a emissão de chaves novas. A fonte das fotos passou a ser o Openverse (fotos do Flickr, CC0/domínio público/CC BY, 800×600 conferido por código), com escolha humana entre até 6 candidatas por equipamento. Crédito na tela: `Fotos: Openverse`, fotógrafo e licença no `title`. Onde este documento diz Pexels, vale o Openverse.
+
 ## Links
 
 - Repositório (turma REST: back e front):
