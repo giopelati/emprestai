@@ -17,7 +17,8 @@ alwaysApply: true
   respeitar PRDs, ADRs, specs, regras e restrições. Informe a decisão tomada.
 - Se o PRD estiver ambíguo sobre o comportamento esperado, liste as perguntas
   e PARE. Não responda pela área de negócio.
-- Não escolha biblioteca que não esteja no ADR-001. Proponha e espere.
+- Não escolha biblioteca que não esteja no ADR-001 ou em outro ADR aceito.
+  Proponha e espere.
 
 ## Escopo
 
