@@ -8,8 +8,8 @@ alwaysApply: false
 
 > leitor: agente
 >
-> Estado: rascunho criado em 05/11/2026 a partir de `AGENTS.md`, `.gitignore` e
-> dos arquivos `.env.example`. Aguarda revisão do time.
+> Estado: criada em 05/11/2026; revisada em 10/11/2026 para a ADR-003 e o
+> conflito C4 da spec 002 (chave secreta só com pessoa).
 
 ## Quando
 

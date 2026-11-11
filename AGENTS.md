@@ -47,8 +47,8 @@ Precedência entre fontes, autoridade do agente e avisos antes de `git push` tê
 - O monorepo usa npm workspaces e possui manifestos e lockfile na raiz.
 - `docs/specs/001-login/` contém spec, plano aprovado e tarefas da primeira feature.
 - O frontend React/Vite implementa Login responsivo, validação, Supabase Auth, papel confiável, restauração de sessão, shells protegidos e logout.
-- A autenticação fala diretamente com Supabase Auth; dados e regras de empréstimos permanecem fora desta feature.
-- O backend possui aplicação Nest mínima com `GET /health` → `{ "status": "ok" }`; ainda sem regras de negócio.
+- A autenticação fala diretamente com Supabase Auth. Dados de empréstimo passam pelo backend Nest (`GET /equipamentos`, `POST /emprestimos`, `GET /emprestimos/meus`), que chama o PostgREST com o JWT da pessoa (ADR-003).
+- Specs `002-dados-iniciais` e `003-solicitar-emprestimo` implementadas e verificadas localmente; produção e fotos reais pendentes de pessoa (`docs/producao/roteiro-pratica.md`).
 - Migrations em `supabase/migrations/` (ADR-002). Testes Jest em `backend/test/`, contra o Supabase local. Sem CI.
 - Dados iniciais: `npm run dados:popular` (local). Os scripts com sufixo de produção são só para pessoa. Ver `docs/specs/002-dados-iniciais/`.
 - A feature `001-login` está implementada, mas ainda não está pronta: CA-05 a CA-08 e CA-10 dependem de verificação com Supabase local. Ver `docs/specs/001-login/tasks.md`.

@@ -1,16 +1,9 @@
 # Handoff
 
-- Onde parei: `001-login` implementada, mas não pronta. T01 e T06 concluídas; T02 a T05 aguardam CA-05, CA-06, CA-07, a restauração do CA-08 e CA-10 com Supabase local. Evidências em `docs/specs/001-login/tasks.md`.
-- Commitado: branch `feat/001-login`, último commit `6332166`, 6 commits à frente de `master` (`f48221f`).
-- Não commitado em 05/11/2026: `.claude/agents/verificador-spec.md`, `skills/conferir-tela/` e correções em `AGENTS.md`, `handoff.md`, `rules/` e `docs/specs/001-login/`.
-- Banco local: nada aplicado. Não há Supabase local documentado, schema, migration ou policy.
-- Publicado: `frontend/` em `emprestai-frontend`, branch `feat/001-login` (`08c862b`), e `backend/` em `emprestai-backend`, branch `feat/001-login` (`50dcc4c`). Ambos têm o mesmo conteúdo do commit `6332166`. `docs/`, `rules/` e `agents/` não estão em nenhum remoto.
-- Pendente de decisão do time:
-  - O backend Nest (`GET /health`, commit `9dc87af`) contraria `spec.md` e `plan.md` e não tem spec.
-  - O ADR-001 conflita com a spec em autenticação (RLS × Supabase Auth) e não menciona a Vercel.
-  - `.claude/agents/verificador-spec.md` ainda não é carregado como subagente; falta definir a ferramenta e o formato.
-  - Os arquivos `.env` locais apontam para o Supabase remoto, contra `AGENTS.md` e `rules/restrictions.md`.
-  - Faltam pré-requisitos da aula 10: `docs/adr/002-design-system.md`, `rules/operacao.md`, tela de teste do design e tabelas por migration.
-  - MCP: nenhum ligado. O Supabase remoto conflita com `rules/restrictions.md`, e o local depende de ser documentado.
-- Não fazer: não rode login real com os `.env` atuais, porque tocaria o Supabase remoto; não escreva nem altere ADR; não marque T02 a T05 sem executar a verificação; não inicie o Catálogo sem spec própria.
-- Próximo passo: resolva as decisões pendentes e documente o Supabase local para concluir a verificação de T02 a T05.
+- Onde parei: specs 002 e 003 implementadas e verificadas localmente (CONFORME COM LIMITAÇÕES). Faltam só passos de pessoa: 002/T05 (fotos reais, precisa de `PEXELS_API_KEY` e revisão humana), 002/T06 e 003/T07 (produção).
+- Commitado: branch `feat/003-solicitar-emprestimo` (contém `feat/002-dados-iniciais`). Relatórios do verificador em `docs/specs/<NNN>/verificacoes/`.
+- Banco local: `npm run db:reset` aplica as duas migrations; `npm test --workspace backend` → 23 passed. Nada fica no banco local entre sessões que importe.
+- Publicado: `backend/` e `frontend/` (com ENTREGA.md) na branch `feat/003-solicitar-emprestimo` dos repositórios `emprestai-backend` e `emprestai-frontend` (preview da Vercel). Produção (`feat/001-login`) ainda está com o Login. Banco de produção sem as migrations.
+- Monorepo (specs, ADRs, rules, subagente, skill) ainda não está em nenhum remoto: criar o repositório `emprestai` e fazer push.
+- Não fazer: não aplicar migration nem rodar scripts com sufixo de produção pelo agente; não mudar status de spec para `Pronta` sem rodada CONFORME (o pre-commit recusa); não editar migration já aplicada.
+- Próximo passo: siga `docs/producao/roteiro-pratica.md` do passo 1 ao 8.
