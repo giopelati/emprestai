@@ -39,7 +39,7 @@ de devolução.
 |---|---|---|
 | L1 | Quem pode solicitar | Qualquer pessoa autenticada com papel válido (`colaborador` ou `operacoes`). O PRD fala em "cada pessoa" e põe o limite por pessoa; a navegação já implementada para Operações (`frontend/src/components/ProtectedShell.tsx`, inspirada em `layout.md`) tem `Meus empréstimos`. Sem papel válido, a solicitação é recusada. |
 | L2 | O que é "em atraso" | Empréstimo em aberto cuja devolução prevista é **anterior** a hoje. No dia da devolução ainda está em dia. |
-| L3 | Qual "hoje" | Data civil em `America/Sao_Paulo`, calculada no banco. |
+| L3 | Qual "hoje" | Data civil em `America/Sao_Paulo`. A regra (recusa por atraso e data de devolução) usa o "hoje" do banco, dentro da função; a marcação `Em atraso` de `Meus empréstimos` usa o mesmo fuso no backend, só para exibir. Ajuste registrado após a rodada 1 de entrega do verificador. |
 | L4 | Ordem das recusas, quando mais de uma vale | Equipamento inexistente → equipamento indisponível → atraso → limite. A primeira que se aplica é a mostrada. |
 | L5 | O catálogo mostra quem está com o item? | Não. Mostra `Emprestado`; se for da própria pessoa, `Está com você`. O PRD diz que cada pessoa vê os próprios empréstimos; o "Com {pessoa}" do `layout.md` é só inspiração. |
 | L6 | Confirmação antes de criar | Sim, no mesmo card: `Solicitar` → `Confirmar` / `Cancelar`. Como devolução está fora do escopo, um clique acidental prenderia o item sem como desfazer. A criação continua imediata após confirmar, sem aprovação de Operações. |
