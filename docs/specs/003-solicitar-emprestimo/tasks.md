@@ -19,7 +19,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 
 - CAs: CA-01, CA-04 a CA-11
 - Arquivos: `backend/test/solicitar-emprestimo.test.ts`, `backend/test/apoio/**`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. `npm test --workspace backend`: 23 testes passaram (13 da 002, 10 da 003) após `npm run db:reset`.
 
 ## T04 — Catálogo na tela
 
