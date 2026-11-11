@@ -14,7 +14,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 - CAs: CA-01, CA-04, CA-08
 - Arquivos: `supabase/migrations/20261111010559_equipamentos.sql`,
   `supabase/config.toml`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. `npm run db:reset` recriou o banco local e aplicou a migration.
 
 ## T03 — Script de dados
 
