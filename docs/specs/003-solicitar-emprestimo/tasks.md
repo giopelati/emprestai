@@ -13,7 +13,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 - CAs: CA-01, CA-04, CA-05, CA-06, CA-07, CA-09, CA-10, CA-11
 - Arquivos: `backend/src/**`, `backend/package.json`, `backend/.env.example`,
   `package-lock.json`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. Typecheck e build do backend sem erro.
 
 ## T03 — Testes da API
 
