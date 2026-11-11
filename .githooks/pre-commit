@@ -1,0 +1,3 @@
+#!/bin/sh
+# Instalado por `npm install` (script prepare: git config core.hooksPath .githooks).
+exec node scripts/guardas/pre-commit.mjs

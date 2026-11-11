@@ -11,7 +11,8 @@ Negócio em `docs/PRD.md`. Stack decidida em `docs/adr/001-stack.md`.
 - `docs/adr/` — decisões técnicas já tomadas e o motivo delas.
 - `docs/specs/<NNN-funcionalidade>/` — spec, plano e tarefas de cada feature.
 - `rules/` — como se trabalha aqui. Leia `rules/restrictions.md` sempre.
-- `agents/` — agentes especializados do projeto. Ver `## Procedimentos`.
+- `.claude/agents/` — subagentes do projeto (formato Claude Code). Ver `## Procedimentos`.
+- `.claude/settings.json` e `scripts/guardas/` — hooks que bloqueiam produção e salvam relatórios do verificador.
 - `skills/` — técnicas que o agente carrega sob demanda. Ver `## Skills`.
 - `layout.md` — inspiração de interface; não é fonte normativa. PRDs, ADRs, specs, regras e restrições prevalecem.
 
@@ -25,7 +26,9 @@ Só entram aqui comandos que já foram executados com sucesso nesta máquina.
 - verificar tipos do backend: `npm run typecheck --workspace backend`.
 - buildar o backend: `npm run build --workspace backend`.
 - rodar o backend buildado: `npm run start --workspace backend` (porta `PORT`, padrão 3000).
-- subir o banco local: não documentado.
+- subir o banco local (Docker precisa estar rodando): `npm run db:start`.
+- recriar o banco local do zero, aplicando todas as migrations: `npm run db:reset`.
+- ver URL e chaves do banco local: `npx supabase status`.
 - rodar o frontend em desenvolvimento: `npm run dev --workspace frontend`. Login real ainda depende do Supabase local.
 - rodar os testes: não documentado.
 
@@ -62,11 +65,13 @@ Precedência entre fontes, autoridade do agente e avisos antes de `git push` tê
 |---|---|
 | Sempre | `rules/restrictions.md` |
 | Ao iniciar funcionalidade ou mudança de comportamento | `rules/spec-flow.md` |
-| Antes de começar a codar uma tarefa | `agents/verificador-spec.md`, modo `gate` |
-| Antes de declarar uma tarefa pronta | `rules/checks.md` e `agents/verificador-spec.md`, modo `entrega` |
+| Antes de começar a codar uma tarefa | `.claude/agents/verificador-spec.md`, modo `gate` |
+| Antes de declarar uma tarefa pronta | `rules/checks.md` e `.claude/agents/verificador-spec.md`, modo `entrega` |
 | Ao mudar schema, tabela ou política de acesso | `rules/migration.md` |
 | Ao escrever, alterar ou remover teste | `rules/tests.md` |
 | Ao lidar com variável de ambiente, chave ou credencial | `rules/secrets.md` |
 | Ao terminar uma tarefa ou fechar a sessão | `rules/handoff.md` |
 
-Se a ferramenta em uso não carregar `agents/verificador-spec.md` como subagente, leia o arquivo e siga o procedimento dele sem editar nada.
+O verificador roda como subagente `verificador-spec` (contexto limpo, sem ferramentas de escrita, Bash restrito por hook). O hook `SubagentStop` salva o relatório em `docs/specs/<NNN>/verificacoes/`. O pre-commit do Git (`.githooks/`, instalado por `npm install`) recusa o commit que muda o status de uma spec para `Pronta` sem relatório `CONFORME` do commit atual.
+
+Se a ferramenta em uso não carregar o subagente, leia `.claude/agents/verificador-spec.md`, siga o procedimento sem editar nada e salve o relatório com `node scripts/guardas/salvar-relatorio.mjs --arquivo <relatorio.md>`.

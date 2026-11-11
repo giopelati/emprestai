@@ -35,9 +35,11 @@ inicial. Não toque em alterações preexistentes fora do escopo da tarefa.
 6. Se houver spec com critério de aceitação identificado, diga qual CA a
    tarefa atende. Se não houver spec ou CA, diga `não se aplica`; não invente
    um identificador.
-7. Se houver spec, execute `agents/verificador-spec.md` no modo `entrega` e
-   mostre o veredito. `CONFORME COM LIMITAÇÕES` ou `NÃO CONFORME` significam que
-   a tarefa não está pronta.
+7. Se houver spec, commite a tarefa e acione o subagente `verificador-spec`
+   no modo `entrega` sobre esse commit. Mostre o veredito. `CONFORME COM
+   LIMITAÇÕES` ou `NÃO CONFORME` significam que a tarefa não está pronta.
+8. O verificador não corrige nada, nem teste quebrado. A correção é sua, em
+   commit novo, seguida de nova rodada do verificador.
 
 ## Verificação
 
