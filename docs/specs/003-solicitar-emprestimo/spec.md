@@ -37,7 +37,7 @@ de devolução.
 
 | # | O que faltava | Decisão |
 |---|---|---|
-| L1 | Quem pode solicitar | Qualquer pessoa autenticada com papel válido (`colaborador` ou `operacoes`). O PRD fala em "cada pessoa", e a navegação de Operações (spec 001) já tem `Meus empréstimos`. Sem papel válido, a solicitação é recusada. |
+| L1 | Quem pode solicitar | Qualquer pessoa autenticada com papel válido (`colaborador` ou `operacoes`). O PRD fala em "cada pessoa" e põe o limite por pessoa; a navegação já implementada para Operações (`frontend/src/components/ProtectedShell.tsx`, inspirada em `layout.md`) tem `Meus empréstimos`. Sem papel válido, a solicitação é recusada. |
 | L2 | O que é "em atraso" | Empréstimo em aberto cuja devolução prevista é **anterior** a hoje. No dia da devolução ainda está em dia. |
 | L3 | Qual "hoje" | Data civil em `America/Sao_Paulo`, calculada no banco. |
 | L4 | Ordem das recusas, quando mais de uma vale | Equipamento inexistente → equipamento indisponível → atraso → limite. A primeira que se aplica é a mostrada. |

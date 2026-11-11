@@ -6,7 +6,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 
 - CAs: CA-04, CA-05, CA-06, CA-07, CA-08, CA-10, CA-11
 - Arquivos: `supabase/migrations/*_emprestimos.sql`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. Gate CONFORME (`verificacoes/20261111-012007-gate-904e5a0.md`); `npm run db:reset` aplicou as duas migrations do zero.
 
 ## T02 — API de catálogo e empréstimos
 
