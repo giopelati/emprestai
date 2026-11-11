@@ -28,7 +28,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 - Arquivos: `backend/package.json`, `backend/tsconfig.test.json`,
   `backend/scripts/jest.mjs`, `backend/test/**`, `package-lock.json`,
   `.gitignore`, `AGENTS.md`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. `npm test --workspace backend`: 13 testes passaram após `npm run db:reset`.
 
 ## T05 — Fotos reais (pessoa)
 

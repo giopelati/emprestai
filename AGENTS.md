@@ -30,7 +30,7 @@ Só entram aqui comandos que já foram executados com sucesso nesta máquina.
 - recriar o banco local do zero, aplicando todas as migrations: `npm run db:reset`.
 - ver URL e chaves do banco local: `npx supabase status`.
 - rodar o frontend em desenvolvimento: `npm run dev --workspace frontend`. Login real ainda depende do Supabase local.
-- rodar os testes: não documentado.
+- rodar os testes (Jest, só contra o banco local; precisa do banco no ar): `npm run db:reset` e depois `npm test --workspace backend`.
 
 ## Ambiente
 
@@ -49,8 +49,8 @@ Precedência entre fontes, autoridade do agente e avisos antes de `git push` tê
 - O frontend React/Vite implementa Login responsivo, validação, Supabase Auth, papel confiável, restauração de sessão, shells protegidos e logout.
 - A autenticação fala diretamente com Supabase Auth; dados e regras de empréstimos permanecem fora desta feature.
 - O backend possui aplicação Nest mínima com `GET /health` → `{ "status": "ok" }`; ainda sem regras de negócio.
-- Ainda não há testes automatizados, migrations, estratégia de migration ou configuração de CI.
-- A subida do Supabase local e a criação de usuários locais por papel ainda não estão documentadas.
+- Migrations em `supabase/migrations/` (ADR-002). Testes Jest em `backend/test/`, contra o Supabase local. Sem CI.
+- Dados iniciais: `npm run dados:popular` (local). Os scripts com sufixo de produção são só para pessoa. Ver `docs/specs/002-dados-iniciais/`.
 - A feature `001-login` está implementada, mas ainda não está pronta: CA-05 a CA-08 e CA-10 dependem de verificação com Supabase local. Ver `docs/specs/001-login/tasks.md`.
 
 ## Skills
