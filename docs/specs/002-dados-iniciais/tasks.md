@@ -7,7 +7,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 - CAs: CA-03, CA-04, CA-05, CA-09
 - Arquivos: `skills/imagens-equipamentos/**`, `supabase/dados/equipamentos.json`,
   `.env.example`, `package.json` (scripts `imagens:*`), `.gitignore`.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. Gate CONFORME na rodada 2 (`verificacoes/20261111-011444-gate-8fdda33.md`).
 
 ## T02 — Migration de equipamentos e bucket
 
