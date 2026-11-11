@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-// Passo 1 da skill: busca no Pexels, descarta o que a triagem automática já
-// reprova, baixa em 800×600 (conferido por código) e monta a folha de revisão.
+// Passo 1 da skill: busca no Openverse (só fotos do Flickr, conflito C5 da
+// spec 002), descarta o que a triagem automática já reprova, baixa em 800×600
+// (conferido por código) e monta a folha de revisão.
 // Não envia nada a lugar nenhum. Uso: npm run imagens:preparar
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
@@ -11,34 +13,88 @@ import {
   ARQ_REJEITADAS,
   ARQ_SELECAO,
   CACHE,
-  LICENCA,
+  LICENCAS_ACEITAS,
   baixarJpeg,
   caminhoCache,
   exigirTamanho,
   escreverJson,
+  idFlickr,
   lerJson,
   motivoAutomatico,
   sha256,
-  urlRecortada,
+  textoLicenca,
+  urlTamanho800,
 } from './lib.mjs';
 
-const API = 'https://api.pexels.com/v1';
-const POR_PAGINA = 40;
+const API = 'https://api.openverse.org/v1/images/';
+const POR_PAGINA = 20; // máximo sem chave
+const PAGINAS = 2;
+const TENTATIVAS = 3;
+const CANDIDATAS = 6;
 
-async function buscar(chave, termo) {
-  const url = new URL(`${API}/search`);
-  url.searchParams.set('query', termo);
-  url.searchParams.set('orientation', 'landscape');
-  url.searchParams.set('per_page', String(POR_PAGINA));
-  const resposta = await fetch(url, { headers: { Authorization: chave } });
-  if (resposta.status === 429) {
-    throw new Error('Limite de requisições do Pexels atingido (200/h). Tente mais tarde.');
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Termo da lista e, se ele não der candidata, o mesmo termo sem as últimas
+// palavras ("usb cable white background" → "usb cable white" → "usb cable").
+export function termosDeBusca(busca) {
+  const palavras = String(busca).trim().split(/\s+/);
+  const termos = [];
+  for (let n = palavras.length; n >= Math.min(2, palavras.length); n -= 1) {
+    termos.push(palavras.slice(0, n).join(' '));
   }
-  if (!resposta.ok) {
-    throw new Error(`Busca no Pexels falhou (${resposta.status}) para "${termo}".`);
+  return termos;
+}
+
+async function buscar(termo, pagina) {
+  const url = new URL(API);
+  url.searchParams.set('q', termo);
+  url.searchParams.set('source', 'flickr');
+  url.searchParams.set('license', LICENCAS_ACEITAS.join(','));
+  url.searchParams.set('aspect_ratio', 'wide');
+  url.searchParams.set('page_size', String(POR_PAGINA));
+  url.searchParams.set('page', String(pagina));
+  for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa += 1) {
+    let resposta;
+    try {
+      resposta = await fetch(url, { headers: { Accept: 'application/json' } });
+    } catch (erro) {
+      if (tentativa === TENTATIVAS) throw erro;
+      await esperar(3000);
+      continue;
+    }
+    if (resposta.status === 429) {
+      throw new Error('Limite de requisições do Openverse atingido. Tente mais tarde.');
+    }
+    if (resposta.ok) {
+      return (await resposta.json()).results ?? [];
+    }
+    // 400/404 aparecem quando a página passa do fim dos resultados.
+    if (resposta.status === 400 || resposta.status === 404) {
+      return [];
+    }
+    if (tentativa === TENTATIVAS) {
+      throw new Error(`Busca no Openverse falhou (${resposta.status}) para "${termo}".`);
+    }
+    await esperar(3000);
   }
-  const corpo = await resposta.json();
-  return corpo.photos ?? [];
+  return [];
+}
+
+// Só fotos 4:3 deitadas (o tamanho _c sai 800×600), com autor identificado.
+function utilizavel(foto) {
+  return (
+    foto.width > 0 &&
+    foto.width * 3 === foto.height * 4 &&
+    !foto.mature &&
+    foto.creator &&
+    foto.creator_url &&
+    idFlickr(foto.foreign_landing_url)
+  );
+}
+
+function textoParaTriagem(foto) {
+  const tags = (foto.tags ?? []).map((t) => t.name).join(' ');
+  return `${foto.title ?? ''} ${tags}`;
 }
 
 function escaparHtml(texto) {
@@ -46,46 +102,103 @@ function escaparHtml(texto) {
 }
 
 function folhaDeRevisao(selecao) {
-  const cartoes = selecao.itens
-    .map(
-      (item) => `<figure>
-  <img src="./${item.patrimonio}.jpg" width="400" height="300" alt="">
-  <figcaption>
-    <strong>${escaparHtml(item.patrimonio)} · ${escaparHtml(item.nome)}</strong><br>
-    Pexels ${item.pexels_id} · ${escaparHtml(item.fotografo)}<br>
-    <em>${escaparHtml(item.alt || '(sem texto alternativo)')}</em><br>
-    Situação: ${item.revisao}
-  </figcaption>
-</figure>`,
-    )
+  const blocos = selecao.itens
+    .map((item) => {
+      const cartoes = item.candidatas
+        .map(
+          (c, i) => `<figure>
+    <img src="./${c.arquivo}" width="400" height="300" alt="">
+    <figcaption><strong>${i + 1}</strong> · Flickr ${c.foto_id} · ${escaparHtml(c.fotografo)} · ${escaparHtml(c.licenca.split(' — ')[0])}<br>
+    <em>${escaparHtml(c.titulo || '(sem título)')}</em></figcaption>
+  </figure>`,
+        )
+        .join('\n');
+      return `<section>
+  <h2>${escaparHtml(item.patrimonio)} · ${escaparHtml(item.nome)} — ${item.revisao}</h2>
+  <div class="grade">
+  ${cartoes}
+  </div>
+</section>`;
+    })
     .join('\n');
   return `<!doctype html>
 <html lang="pt-BR"><meta charset="utf-8"><title>Revisão das imagens</title>
 <style>
 body{font-family:system-ui,sans-serif;background:#161826;color:#e9e9ed;margin:24px}
-main{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px}
-figure{margin:0;background:#232532;padding:12px;border-radius:8px}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+section{margin-bottom:32px}
+figure{margin:0;background:#232532;padding:10px;border-radius:8px}
 img{width:100%;height:auto;display:block;border-radius:4px}
-figcaption{font-size:13px;line-height:1.5;margin-top:8px}
+figcaption{font-size:13px;line-height:1.5;margin-top:6px}
 </style>
-<h1>Revisão visual — reprovar se houver pessoa (ou parte dela), marca ou logo legível, texto, ou tela com conteúdo</h1>
-<p>Depois de olhar, rode <code>npm run imagens:revisar</code> em um terminal.</p>
-<main>
-${cartoes}
-</main>
+<h1>Revisão visual — escolha, para cada equipamento, uma foto que mostre o equipamento sem pessoa (nem parte dela), marca ou logo legível, texto, ou tela com conteúdo</h1>
+<p>Depois de olhar, rode <code>npm run imagens:revisar</code> em um terminal e digite o número escolhido (0 se nenhuma serve).</p>
+${blocos}
 </html>
 `;
 }
 
-export async function preparar({ chave, log = console.log } = {}) {
-  if (!chave) {
-    throw new Error('Defina PEXELS_API_KEY no arquivo .env da raiz (fora do Git).');
+// Junta até CANDIDATAS fotos por equipamento para a pessoa escolher uma.
+async function buscarCandidatas(equipamento, usados, rejeitados, descartadas) {
+  const candidatas = [];
+  for (const termo of termosDeBusca(equipamento.busca)) {
+    for (let pagina = 1; pagina <= PAGINAS; pagina += 1) {
+      const fotos = await buscar(termo, pagina);
+      for (const foto of fotos.filter(utilizavel)) {
+        const fotoId = idFlickr(foto.foreign_landing_url);
+        if (usados.has(fotoId) || rejeitados.has(fotoId)) {
+          continue;
+        }
+        const motivo = motivoAutomatico(textoParaTriagem(foto));
+        if (motivo) {
+          descartadas.push({ patrimonio: equipamento.patrimonio, foto_id: fotoId, titulo: foto.title, motivo });
+          continue;
+        }
+        try {
+          const downloadUrl = urlTamanho800(foto.url);
+          const licenca = textoLicenca(foto);
+          const buffer = await baixarJpeg(downloadUrl);
+          const arquivo = `${equipamento.patrimonio}-${candidatas.length + 1}.jpg`;
+          writeFileSync(join(CACHE, arquivo), buffer);
+          usados.add(fotoId);
+          candidatas.push({
+            patrimonio: equipamento.patrimonio,
+            foto_id: fotoId,
+            titulo: foto.title ?? '',
+            fotografo: foto.creator,
+            fotografo_url: foto.creator_url,
+            pagina_url: foto.foreign_landing_url,
+            download_url: downloadUrl,
+            licenca,
+            largura: 800,
+            altura: 600,
+            sha256: sha256(buffer),
+            arquivo,
+          });
+          if (candidatas.length === CANDIDATAS) {
+            return candidatas;
+          }
+        } catch (erro) {
+          descartadas.push({
+            patrimonio: equipamento.patrimonio,
+            foto_id: fotoId,
+            titulo: foto.title,
+            motivo: `download/tamanho/licença: ${erro.message}`,
+          });
+        }
+      }
+      if (fotos.length < POR_PAGINA) break;
+    }
   }
+  return candidatas;
+}
+
+export async function preparar({ log = console.log } = {}) {
   const equipamentos = lerJson(ARQ_EQUIPAMENTOS, []);
   const aprovadas = lerJson(ARQ_CREDITOS, []);
   const rejeitadas = lerJson(ARQ_REJEITADAS, []);
-  const idsRejeitados = new Set(rejeitadas.map((r) => r.pexels_id));
-  const usados = new Set(aprovadas.map((a) => a.pexels_id));
+  const rejeitados = new Set(rejeitadas.map((r) => r.foto_id));
+  const usados = new Set(aprovadas.map((a) => a.foto_id));
   mkdirSync(CACHE, { recursive: true });
 
   const selecao = { gerado_em: new Date().toISOString(), itens: [], descartadas_automaticamente: [] };
@@ -100,64 +213,34 @@ export async function preparar({ chave, log = console.log } = {}) {
         writeFileSync(arquivo, buffer);
       }
       exigirTamanho(buffer, arquivo);
-      selecao.itens.push({ ...aprovada, nome: equipamento.nome, revisao: 'aprovada' });
-      log(`${equipamento.patrimonio}: já aprovada (Pexels ${aprovada.pexels_id}).`);
+      selecao.itens.push({
+        patrimonio: equipamento.patrimonio,
+        nome: equipamento.nome,
+        revisao: 'aprovada',
+        candidatas: [{ ...aprovada, arquivo: `${equipamento.patrimonio}.jpg` }],
+      });
+      log(`${equipamento.patrimonio}: já aprovada (Flickr ${aprovada.foto_id}).`);
       continue;
     }
 
-    const fotos = await buscar(chave, equipamento.busca);
-    let escolhida = null;
-    for (const foto of fotos) {
-      if (usados.has(foto.id) || idsRejeitados.has(foto.id)) {
-        continue;
-      }
-      const motivo = motivoAutomatico(foto.alt);
-      if (motivo) {
-        selecao.descartadas_automaticamente.push({
-          patrimonio: equipamento.patrimonio,
-          pexels_id: foto.id,
-          alt: foto.alt,
-          motivo,
-        });
-        continue;
-      }
-      try {
-        const downloadUrl = urlRecortada(foto.src.original);
-        const buffer = await baixarJpeg(downloadUrl);
-        writeFileSync(caminhoCache(equipamento.patrimonio), buffer);
-        escolhida = {
-          patrimonio: equipamento.patrimonio,
-          nome: equipamento.nome,
-          pexels_id: foto.id,
-          alt: foto.alt ?? '',
-          fotografo: foto.photographer,
-          fotografo_url: foto.photographer_url,
-          pagina_url: foto.url,
-          download_url: downloadUrl,
-          licenca: LICENCA,
-          largura: 800,
-          altura: 600,
-          sha256: sha256(buffer),
-          revisao: 'pendente',
-        };
-        break;
-      } catch (erro) {
-        selecao.descartadas_automaticamente.push({
-          patrimonio: equipamento.patrimonio,
-          pexels_id: foto.id,
-          alt: foto.alt,
-          motivo: `download/tamanho: ${erro.message}`,
-        });
-      }
-    }
-    if (!escolhida) {
+    const candidatas = await buscarCandidatas(
+      equipamento,
+      usados,
+      rejeitados,
+      selecao.descartadas_automaticamente,
+    );
+    if (candidatas.length === 0) {
       throw new Error(
         `${equipamento.patrimonio}: nenhuma candidata passou na triagem para "${equipamento.busca}".`,
       );
     }
-    usados.add(escolhida.pexels_id);
-    selecao.itens.push(escolhida);
-    log(`${equipamento.patrimonio}: candidata Pexels ${escolhida.pexels_id} aguardando revisão.`);
+    selecao.itens.push({
+      patrimonio: equipamento.patrimonio,
+      nome: equipamento.nome,
+      revisao: 'pendente',
+      candidatas,
+    });
+    log(`${equipamento.patrimonio}: ${candidatas.length} candidata(s) aguardando revisão.`);
   }
 
   escreverJson(ARQ_SELECAO, selecao);
@@ -169,7 +252,7 @@ export async function preparar({ chave, log = console.log } = {}) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  preparar({ chave: process.env.PEXELS_API_KEY }).catch((erro) => {
+  preparar().catch((erro) => {
     console.error(erro.message);
     process.exit(1);
   });

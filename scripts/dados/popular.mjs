@@ -43,7 +43,7 @@ function linhaDoEquipamento(equipamento, credito) {
     nome: equipamento.nome,
     categoria: equipamento.categoria,
     imagem_path: nomeObjeto(equipamento.patrimonio),
-    foto_pexels_id: credito.pexels_id,
+    foto_pexels_id: credito.foto_id, // id da foto no Flickr (C5 da spec 002)
     foto_fotografo: credito.fotografo,
     foto_fotografo_url: credito.fotografo_url,
     foto_pagina_url: credito.pagina_url,

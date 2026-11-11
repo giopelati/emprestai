@@ -9,7 +9,8 @@ alwaysApply: false
 > leitor: agente
 >
 > Estado: criada em 05/11/2026; revisada em 10/11/2026 para a ADR-003 e o
-> conflito C4 da spec 002 (chave secreta só com pessoa).
+> conflito C4 da spec 002 (chave secreta só com pessoa) e em 11/11/2026 para o
+> C5 (fotos do Openverse, sem chave).
 
 ## Quando
 
@@ -26,7 +27,6 @@ URL de banco, e antes de empacotar ou publicar o projeto.
   só na máquina de quem executa os passos de produção, e são lidos apenas pelos
   scripts `*:producao` (que exigem terminal interativo). O agente não lê, não
   cria e não usa esse arquivo.
-- **Segredo pessoal de ferramenta:** `PEXELS_API_KEY`, no `.env` da raiz.
 - **Pública:** toda variável com prefixo `VITE_`, porque o Vite a inclui no
   código enviado ao navegador. `SUPABASE_PUBLISHABLE_KEY` também é pública.
 - Mesmo pública, o valor real fica em `.env`, fora do Git.

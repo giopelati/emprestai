@@ -18,7 +18,6 @@ export const ARQ_SELECAO = join(CACHE, 'selecao.json');
 export const LARGURA = 800;
 export const ALTURA = 600;
 export const BUCKET = 'equipamentos';
-export const LICENCA = 'Licença Pexels — https://www.pexels.com/license/';
 
 export function lerJson(caminho, padrao) {
   if (!existsSync(caminho)) {
@@ -84,42 +83,70 @@ export function exigirTamanho(buffer, origem) {
   return dimensoes;
 }
 
-// URL do CDN do Pexels com recorte para 800×600 (mesmos parâmetros que a
-// própria API usa nas variantes de `src`). O tamanho é conferido depois.
-export function urlRecortada(srcOriginal) {
-  const url = new URL(srcOriginal);
-  url.search = '';
-  url.searchParams.set('auto', 'compress');
-  url.searchParams.set('cs', 'tinysrgb');
-  url.searchParams.set('fit', 'crop');
-  url.searchParams.set('w', String(LARGURA));
-  url.searchParams.set('h', String(ALTURA));
-  if (url.hostname !== 'images.pexels.com') {
-    throw new Error(`Origem não permitida: ${url.hostname}. Só images.pexels.com.`);
+// Origem das fotos (spec 002, conflito C5): API do Openverse, só fotos do
+// Flickr. O download é sempre do CDN do Flickr.
+export const HOST_PERMITIDO = 'live.staticflickr.com';
+
+// Nome curto e URL da licença, a partir dos campos do Openverse.
+const NOMES_LICENCA = { cc0: 'CC0', pdm: 'Marca de Domínio Público', by: 'CC BY' };
+export const LICENCAS_ACEITAS = Object.keys(NOMES_LICENCA);
+
+export function textoLicenca(foto) {
+  const nome = NOMES_LICENCA[foto.license];
+  if (!nome || !foto.license_url) {
+    throw new Error(`Licença não aceita: ${foto.license ?? '(vazia)'}.`);
   }
-  return url.toString();
+  const versao = foto.license_version ? ` ${foto.license_version}` : '';
+  return `${nome}${versao} — ${foto.license_url}`;
+}
+
+// Id numérico da foto no Flickr, tirado da página da foto.
+export function idFlickr(paginaUrl) {
+  const achado = /flickr\.com\/photos\/[^/]+\/(\d+)/.exec(String(paginaUrl ?? ''));
+  return achado ? Number(achado[1]) : null;
+}
+
+// O Flickr publica cada foto em tamanhos fixos. O sufixo `_c` tem 800 px no
+// lado maior: numa foto 4:3 deitada, 800×600. O tamanho é conferido depois.
+export function urlTamanho800(url) {
+  const destino = new URL(url);
+  if (destino.hostname !== HOST_PERMITIDO) {
+    throw new Error(`Origem não permitida: ${destino.hostname}. Só ${HOST_PERMITIDO}.`);
+  }
+  const caminho = /^(\/\d+\/\d+_[0-9a-f]+)(_[a-z0-9])?\.jpg$/i.exec(destino.pathname);
+  if (!caminho) {
+    throw new Error(`URL do Flickr fora do padrão: ${url}`);
+  }
+  destino.pathname = `${caminho[1]}_c.jpg`;
+  destino.search = '';
+  return destino.toString();
 }
 
 export async function baixarJpeg(url) {
   const { hostname } = new URL(url);
-  if (hostname !== 'images.pexels.com') {
-    throw new Error(`Origem não permitida: ${hostname}. Só images.pexels.com.`);
+  if (hostname !== HOST_PERMITIDO) {
+    throw new Error(`Origem não permitida: ${hostname}. Só ${HOST_PERMITIDO}.`);
   }
   const resposta = await fetch(url, { headers: { Accept: 'image/jpeg' } });
   if (!resposta.ok) {
     throw new Error(`Download falhou (${resposta.status}): ${url}`);
+  }
+  // O Flickr redireciona tamanho inexistente para uma imagem genérica.
+  const final = new URL(resposta.url || url).hostname;
+  if (final !== HOST_PERMITIDO) {
+    throw new Error(`Origem não permitida após redirecionamento: ${final}.`);
   }
   const buffer = Buffer.from(await resposta.arrayBuffer());
   exigirTamanho(buffer, url);
   return buffer;
 }
 
-// Triagem automática pelo texto alternativo do Pexels. Não substitui a
+// Triagem automática pelo título e pelas tags da foto. Não substitui a
 // revisão humana: só descarta cedo o que já se sabe que não pode entrar.
 const PROIBIDAS = [
   ['pessoa', /\b(person|people|man|men|woman|women|girl|boy|child|kid|baby|hands?|fingers?|face|portrait|selfie|holding|typing|working|student|businessman|businesswoman|freelancer|someone|guy|lady|couple|team|employee)\b/i],
-  ['marca ou logo', /\b(logo|brand|apple|macbook|imac|iphone|ipad|samsung|dell|lenovo|asus|acer|hp|sony|canon|nikon|fujifilm|fuji|panasonic|olympus|leica|logitech|microsoft|windows|google|lg|razer|msi|gopro)\b/i],
-  ['texto ou tela com conteúdo', /\b(text|code|coding|website|webpage|browser|app|application|chart|graph|dashboard|document|spreadsheet|email|social media|video call|zoom|game|gaming|movie|sign|letters?|words?|quote)\b/i],
+  ['marca ou logo', /\b(logo|brand|apple|macbook|imac|iphone|ipad|samsung|dell|lenovo|asus|acer|hp|sony|canon|nikon|fujifilm|fuji|panasonic|olympus|leica|logitech|microsoft|windows|google|lg|razer|msi|gopro|thinkpad|ibm|toshiba|vaio|powerbook|ricoh|kodak|pentax|philips|belkin|benq|viewsonic|eizo|compaq|gateway|polaroid)\b/i],
+  ['texto ou tela com conteúdo', /\b(text|code|coding|website|webpage|browser|app|application|chart|graph|dashboard|document|spreadsheet|email|social media|video call|zoom|game|gaming|movie|sign|letters?|words?|quote|screenshot|wallpaper|linux|ubuntu)\b/i],
 ];
 
 export function motivoAutomatico(alt) {

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // Passo 2 da skill: revisão visual HUMANA. Só roda em terminal interativo.
-// Aprovação vai para supabase/dados/creditos-imagens.json; reprovação para
-// supabase/dados/imagens-rejeitadas.json (as duas versionadas).
+// Para cada equipamento, a pessoa escolhe uma das candidatas pelo número, ou 0
+// se nenhuma serve. Aprovação vai para supabase/dados/creditos-imagens.json;
+// reprovação para supabase/dados/imagens-rejeitadas.json (as duas versionadas).
 // Uso: npm run imagens:revisar
+import { copyFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 
 import {
@@ -10,6 +13,7 @@ import {
   ARQ_REJEITADAS,
   ARQ_SELECAO,
   CACHE,
+  caminhoCache,
   escreverJson,
   lerJson,
 } from './lib.mjs';
@@ -21,6 +25,14 @@ const MOTIVOS = {
   4: 'tela com conteúdo',
   5: 'não mostra o equipamento',
 };
+
+// Crédito gravado: tudo da candidata, menos o que só serve à revisão.
+function credito(candidata) {
+  const { arquivo, titulo, ...resto } = candidata;
+  void arquivo;
+  void titulo;
+  return resto;
+}
 
 async function main() {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
@@ -55,21 +67,24 @@ async function main() {
   const agora = new Date().toISOString();
 
   for (const item of pendentes) {
-    console.log(`\n${item.patrimonio} · ${item.nome}`);
-    console.log(`  arquivo: ${CACHE}/${item.patrimonio}.jpg`);
-    console.log(`  Pexels ${item.pexels_id} · ${item.fotografo} · ${item.pagina_url}`);
-    const resposta = (
-      await leitor.question('  Tem pessoa, marca/logo, texto ou tela com conteúdo? Aprovar? [s/n] ')
-    )
-      .trim()
-      .toLowerCase();
-    if (resposta === 's') {
-      const { revisao, nome, alt, ...credito } = item;
-      void revisao;
-      void nome;
-      void alt;
+    const total = item.candidatas.length;
+    console.log(`\n${item.patrimonio} · ${item.nome} (${total} candidata(s) na folha)`);
+    let escolha = NaN;
+    while (!(Number.isInteger(escolha) && escolha >= 0 && escolha <= total)) {
+      escolha = Number(
+        (
+          await leitor.question(
+            `  Número da foto sem pessoa, marca/logo, texto ou tela com conteúdo (1-${total}), ou 0 se nenhuma serve: `,
+          )
+        ).trim(),
+      );
+    }
+
+    if (escolha > 0) {
+      const candidata = item.candidatas[escolha - 1];
+      copyFileSync(join(CACHE, candidata.arquivo), caminhoCache(item.patrimonio));
+      const registro = { ...credito(candidata), revisado_por: revisor, revisado_em: agora };
       const indice = aprovadas.findIndex((a) => a.patrimonio === item.patrimonio);
-      const registro = { ...credito, revisado_por: revisor, revisado_em: agora };
       if (indice >= 0) {
         aprovadas[indice] = registro;
       } else {
@@ -77,20 +92,23 @@ async function main() {
       }
       continue;
     }
+
     console.log(
       Object.entries(MOTIVOS)
         .map(([n, m]) => `    ${n}) ${m}`)
         .join('\n'),
     );
-    const numero = (await leitor.question('  Motivo (número ou texto): ')).trim();
-    rejeitadas.push({
-      patrimonio: item.patrimonio,
-      pexels_id: item.pexels_id,
-      pagina_url: item.pagina_url,
-      motivo: MOTIVOS[numero] ?? numero,
-      revisado_por: revisor,
-      revisado_em: agora,
-    });
+    const numero = (await leitor.question('  Motivo principal (número ou texto): ')).trim();
+    for (const candidata of item.candidatas) {
+      rejeitadas.push({
+        patrimonio: item.patrimonio,
+        foto_id: candidata.foto_id,
+        pagina_url: candidata.pagina_url,
+        motivo: MOTIVOS[numero] ?? numero,
+        revisado_por: revisor,
+        revisado_em: agora,
+      });
+    }
   }
   leitor.close();
 

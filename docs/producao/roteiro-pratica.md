@@ -11,8 +11,8 @@ repositórios (preview da Vercel), produção ainda com a versão do Login.
 
 ## 1. Fotos reais (spec 002, T05)
 
-1. Crie a chave gratuita em https://www.pexels.com/api/ e coloque no arquivo
-   `.env` da raiz (crie a partir de `.env.example`): `PEXELS_API_KEY=...`.
+1. Nada de chave: as fotos vêm do Openverse (C5 da spec 002). As candidatas
+   já estão em `.cache/imagens-equipamentos/`.
 2. Abra o Docker Desktop e rode `npm run db:start`.
 3. `npm run imagens:preparar`
 4. Abra `.cache/imagens-equipamentos/revisao.html` no navegador e olhe cada

@@ -1,6 +1,6 @@
 ---
 name: imagens-equipamentos
-description: Obtém, revisa e publica as fotos dos equipamentos do Emprestaí — uma por patrimônio, só do Pexels, 800×600, sem repetição, com crédito registrado, num bucket público do Supabase Storage. Use quando pedirem foto, imagem ou crédito de equipamento, trocar a foto de um item, ou popular o bucket `equipamentos`. Não use para logo, landing ou ilustração, nem para escolher biblioteca de imagem.
+description: Obtém, revisa e publica as fotos dos equipamentos do Emprestaí — uma por patrimônio, do Openverse (fotos do Flickr), 800×600, sem repetição, com crédito registrado, num bucket público do Supabase Storage. Use quando pedirem foto, imagem ou crédito de equipamento, trocar a foto de um item, ou popular o bucket `equipamentos`. Não use para logo, landing ou ilustração, nem para escolher biblioteca de imagem.
 paths: "skills/imagens-equipamentos/**, supabase/dados/**"
 ---
 
@@ -8,7 +8,8 @@ paths: "skills/imagens-equipamentos/**, supabase/dados/**"
 
 Toda foto de equipamento do sistema sai desta skill. Nenhuma outra origem de
 imagem de equipamento é aceita, e nenhuma biblioteca de imagem é instalada: o
-recorte é feito pelo CDN do Pexels e o tamanho é conferido por código.
+800×600 vem do tamanho `_c` do Flickr e é conferido por código. Fonte: Openverse
+(conflito C5 da spec 002; o Pexels suspendeu chaves novas).
 
 ## Quem faz o quê
 
@@ -26,19 +27,15 @@ necessário, pare e diga à pessoa qual comando rodar.
 
 1. A lista de equipamentos é `supabase/dados/equipamentos.json`. Não edite: é
    a lista da prática, igual para todos.
-2. A chave do Pexels fica em `PEXELS_API_KEY`, no `.env` da raiz (fora do
-   Git, ver `rules/secrets.md`). Se não existir, pare e peça à pessoa. Não crie
-   conta nem procure chave em outro lugar.
-3. Para detalhes da API (busca, campos, limites, atribuição), leia
-   `references/pexels-api.md`.
+2. A API do Openverse não pede chave. Para detalhes (busca, campos, licenças,
+   atribuição), leia `references/openverse-api.md`.
 
 ## Procedimento
 
-1. Rode `npm run imagens:preparar`. Ele busca cada termo com
-   `orientation=landscape`, pula fotos já usadas e já reprovadas, descarta pelo
-   texto alternativo o que indica pessoa, marca ou texto, baixa a primeira
-   candidata recortada em 800×600 e recusa qualquer arquivo que não seja JPEG
-   800×600. Gera `.cache/imagens-equipamentos/revisao.html`.
+1. Rode `npm run imagens:preparar`. Ele junta até 6 candidatas por
+   equipamento (só 4:3, licença CC0/domínio público/CC BY), pula fotos já usadas
+   e reprovadas, descarta pelo título e pelas tags o que indica pessoa, marca ou
+   texto e recusa qualquer arquivo que não seja JPEG 800×600. Gera `.cache/imagens-equipamentos/revisao.html`.
 2. Peça à pessoa a revisão visual com `npm run imagens:revisar`, seguindo
    `references/revisao-visual.md`. Aprovação grava o crédito em
    `supabase/dados/creditos-imagens.json`; reprovação grava o motivo em
@@ -51,12 +48,12 @@ necessário, pare e diga à pessoa qual comando rodar.
 
 ## O que é garantido por código
 
-- Origem: download só de `images.pexels.com`; qualquer outro host é recusado.
+- Origem: download só de `live.staticflickr.com`; qualquer outro host é recusado.
 - Tamanho: `exigirTamanho` lê o cabeçalho JPEG antes de salvar, antes de
   enviar e depois de enviar, pela URL pública.
-- Sem repetição: o envio recusa `pexels_id` repetido e o banco tem
-  `unique (foto_pexels_id)`.
-- Créditos: o envio recusa crédito sem `pexels_id`, fotógrafo, URL do
+- Sem repetição: o envio recusa `foto_id` repetido e o banco tem
+  `unique (foto_pexels_id)` (nome mantido; guarda o id do Flickr).
+- Créditos: o envio recusa crédito sem `foto_id`, fotógrafo, URL do
   fotógrafo, página, licença ou registro de revisão humana.
 - Idempotência: um objeto por patrimônio (`<patrimonio>.jpg`) com
   `x-upsert: true`.
@@ -80,4 +77,3 @@ alternativo só elimina o óbvio; ela não enxerga a foto.
   `rules/restrictions.md`).
 - Não edite `creditos-imagens.json` à mão para aprovar uma foto.
 - Não use imagem de outra origem, nem como provisória.
-- Não coloque a chave do Pexels em código, comando ou mensagem.

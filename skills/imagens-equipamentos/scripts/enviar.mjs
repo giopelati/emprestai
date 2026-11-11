@@ -34,15 +34,15 @@ export function validarCreditos(creditos, equipamentos) {
     if (!credito.revisado_por || !credito.revisado_em) {
       erros.push(`${equipamento.patrimonio}: crédito sem registro de revisão humana.`);
     }
-    for (const campo of ['pexels_id', 'fotografo', 'fotografo_url', 'pagina_url', 'licenca', 'download_url']) {
+    for (const campo of ['foto_id', 'fotografo', 'fotografo_url', 'pagina_url', 'licenca', 'download_url']) {
       if (!credito[campo]) {
         erros.push(`${equipamento.patrimonio}: crédito sem ${campo}.`);
       }
     }
-    if (ids.has(credito.pexels_id)) {
-      erros.push(`${equipamento.patrimonio}: foto Pexels ${credito.pexels_id} repetida.`);
+    if (ids.has(credito.foto_id)) {
+      erros.push(`${equipamento.patrimonio}: foto ${credito.foto_id} repetida.`);
     }
-    ids.add(credito.pexels_id);
+    ids.add(credito.foto_id);
   }
   if (erros.length > 0) {
     throw new Error(`Envio recusado:\n- ${erros.join('\n- ')}`);

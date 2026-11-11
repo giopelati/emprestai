@@ -16,7 +16,7 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset --local",
     "verificacoes:comparar": "node scripts/comparar-verificacoes.mjs",
-    "imagens:preparar": "node --env-file-if-exists=.env skills/imagens-equipamentos/scripts/preparar.mjs",
+    "imagens:preparar": "node skills/imagens-equipamentos/scripts/preparar.mjs",
     "imagens:revisar": "node skills/imagens-equipamentos/scripts/revisar.mjs",
     "imagens:enviar": "node skills/imagens-equipamentos/scripts/enviar.mjs",
     "imagens:enviar:producao": "node --env-file-if-exists=.env.producao skills/imagens-equipamentos/scripts/enviar.mjs --producao",

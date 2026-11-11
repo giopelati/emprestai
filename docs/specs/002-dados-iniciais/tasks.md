@@ -38,7 +38,10 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
   `rules/secrets.md`, `backend/test/**`, `docs/producao/roteiro-pratica.md`.
 - A tela (link `Fotos: Openverse` e licença no `title`) é a T08 da spec 003.
 - Vem antes de T05 na ordem: T05 passa a usar o Openverse.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. `npm run imagens:preparar` gerou candidatas para os 12
+  (até 6 cada, todas 800×600 conferidas). Testes atualizados e compilados; não
+  rodaram no fechamento porque o Docker parou (rodar `npm run db:reset` e
+  `npm test --workspace backend`).
 
 ## T05 — Fotos reais (pessoa)
 
