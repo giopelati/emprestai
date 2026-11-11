@@ -1076,17 +1076,17 @@
     cursor: not-allowed;
   }
 
-  .credito-pexels {
+  .credito-fotos {
     margin-top: 1.5rem;
     font-size: 0.72rem;
   }
 
-  .credito-pexels a {
+  .credito-fotos a {
     color: var(--color-text-faint);
   }
 
-  .credito-pexels a:hover,
-  .credito-pexels a:focus-visible {
+  .credito-fotos a:hover,
+  .credito-fotos a:focus-visible {
     color: var(--color-accent-light);
   }
 

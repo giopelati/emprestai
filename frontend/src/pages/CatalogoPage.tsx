@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { CreditoPexels } from '../components/CreditoPexels';
+import { CreditoFotos, tituloDaFoto } from '../components/CreditoFotos';
 import {
   CATEGORIAS,
   ErroDaApi,
@@ -116,7 +116,7 @@ export function CatalogoPage() {
                   height={600}
                   loading="lazy"
                   alt={equipamento.nome}
-                  title={`Foto de ${equipamento.foto.fotografo} no Pexels`}
+                  title={tituloDaFoto(equipamento.foto.fotografo, equipamento.foto.licenca)}
                 />
                 <div className="equipamento-card__corpo">
                   <div className="equipamento-card__topo">
@@ -169,7 +169,7 @@ export function CatalogoPage() {
         </ul>
       )}
 
-      <CreditoPexels />
+      <CreditoFotos />
     </main>
   );
 }

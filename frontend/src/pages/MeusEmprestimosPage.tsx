@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { CreditoPexels } from '../components/CreditoPexels';
+import { CreditoFotos, tituloDaFoto } from '../components/CreditoFotos';
 import { ErroDaApi, formatarData, listarMeusEmprestimos } from '../lib/api';
 import type { MeusEmprestimos } from '../lib/api';
 
@@ -77,7 +77,7 @@ export function MeusEmprestimosPage({ onIrAoCatalogo }: MeusEmprestimosPageProps
                   width={800}
                   height={600}
                   alt={emprestimo.equipamento.nome}
-                  title={`Foto de ${emprestimo.equipamento.fotografo} no Pexels`}
+                  title={tituloDaFoto(emprestimo.equipamento.fotografo, emprestimo.equipamento.licenca)}
                 />
                 <div className="emprestimo-linha__item">
                   <h2>{emprestimo.equipamento.nome}</h2>
@@ -92,7 +92,7 @@ export function MeusEmprestimosPage({ onIrAoCatalogo }: MeusEmprestimosPageProps
               </li>
             ))}
           </ul>
-          <CreditoPexels />
+          <CreditoFotos />
         </>
       )}
     </main>

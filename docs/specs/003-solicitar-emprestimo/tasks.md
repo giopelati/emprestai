@@ -56,7 +56,7 @@ nada disso saiu da máquina). Conta de teste `@emprestai.test`, papel
 | CA | Passo | Resultado |
 |---|---|---|
 | CA-01 | Entrar e abrir Catálogo | 12 cards com foto, categoria, nome, patrimônio e pill; `9 de 12 equipamentos disponíveis agora` |
-| CA-02 | Ler rodapé e foto | Link `Fotos: Pexels` → `https://www.pexels.com/`; `title` da foto `Foto de <fotógrafo> no Pexels`; nenhum `footer` (antes do C5 da spec 002; depois dele, ver 002/T07) |
+| CA-02 | Ler rodapé e foto | Link `Fotos: Pexels` → `https://www.pexels.com/`; `title` da foto `Foto de <fotógrafo> no Pexels`; nenhum `footer` (antes do C5 da spec 002; depois dele, ver T08) |
 | CA-03 | Cards de TI-0004/0007/0010 | Botão `Em manutenção` desabilitado; disponíveis com `Solicitar` |
 | CA-04 | Solicitar → Confirmar no TI-0001 | `Empréstimo registrado. Devolva até 24/11/2026.`; card `Está com você`; `8 de 12` |
 | CA-05 | Solicitar TI-0002, TI-0003 e depois TI-0005 | Terceiro ok; quarto mostra em `role="alert"`: `Você já está com 3 itens emprestados. Devolva um para solicitar outro.` |
@@ -76,7 +76,9 @@ empréstimos (provado na API pelo teste `CA-09`), fotos reais.
   `frontend/src/lib/api.ts`, `backend/src/emprestimos/emprestimos.service.ts`
   (licença em `GET /emprestimos/meus`), `backend/test/solicitar-emprestimo.test.ts`.
 - Vem antes de T07 na ordem.
-- Estado: [ ] pendente.
+- Estado: [x] concluída. Typecheck e build do frontend e do backend passaram.
+  Testes da API atualizados; não rodaram no fechamento (Docker parado). Conferência
+  no navegador pendente.
 
 ## T07 — Produção (pessoa)
 

@@ -40,6 +40,7 @@ export interface MeuEmprestimo {
     categoria: string;
     imagemUrl: string;
     fotografo: string;
+    licenca: string;
   };
 }
 
