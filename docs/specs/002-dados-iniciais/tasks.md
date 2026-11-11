@@ -20,7 +20,7 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
 
 - CAs: CA-01, CA-02, CA-06, CA-07, CA-09
 - Arquivos: `scripts/dados/popular.mjs`, `package.json` (scripts `dados:*`).
-- Estado: [ ] pendente.
+- Estado: [x] concluída.
 
 ## T04 — Testes automatizados
 

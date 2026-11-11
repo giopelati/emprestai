@@ -19,7 +19,9 @@
     "imagens:preparar": "node --env-file-if-exists=.env skills/imagens-equipamentos/scripts/preparar.mjs",
     "imagens:revisar": "node skills/imagens-equipamentos/scripts/revisar.mjs",
     "imagens:enviar": "node skills/imagens-equipamentos/scripts/enviar.mjs",
-    "imagens:enviar:producao": "node --env-file-if-exists=.env.producao skills/imagens-equipamentos/scripts/enviar.mjs --producao"
+    "imagens:enviar:producao": "node --env-file-if-exists=.env.producao skills/imagens-equipamentos/scripts/enviar.mjs --producao",
+    "dados:popular": "node scripts/dados/popular.mjs",
+    "dados:popular:producao": "node --env-file-if-exists=.env.producao scripts/dados/popular.mjs --producao"
   },
   "devDependencies": {
     "supabase": "3.1.0"
