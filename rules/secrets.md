@@ -18,11 +18,19 @@ URL de banco, e antes de empacotar ou publicar o projeto.
 
 ## Classificação
 
-- **Segredo:** `SUPABASE_SECRET_KEY`, `DATABASE_URL` e `DIRECT_URL`. Só o backend
-  usa essas variáveis.
+- **Segredo:** `SUPABASE_SECRET_KEY`, `DATABASE_URL` e `DIRECT_URL`. Pela
+  ADR-003, o backend não usa nenhuma delas: nenhum segredo de banco vai para a
+  Vercel.
+- **Segredo de produção, só de pessoa:** `PRODUCAO_SUPABASE_URL`,
+  `PRODUCAO_SUPABASE_SECRET_KEY` e `SENHA_PROFESSOR`. Ficam em `.env.producao`,
+  só na máquina de quem executa os passos de produção, e são lidos apenas pelos
+  scripts `*:producao` (que exigem terminal interativo). O agente não lê, não
+  cria e não usa esse arquivo.
+- **Segredo pessoal de ferramenta:** `PEXELS_API_KEY`, no `.env` da raiz.
 - **Pública:** toda variável com prefixo `VITE_`, porque o Vite a inclui no
   código enviado ao navegador. `SUPABASE_PUBLISHABLE_KEY` também é pública.
 - Mesmo pública, o valor real fica em `.env`, fora do Git.
+- Banco local: URL e chaves vêm de `npx supabase status`, nunca de `.env`.
 
 ## Procedimento
 
