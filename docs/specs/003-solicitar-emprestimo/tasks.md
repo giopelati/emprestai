@@ -67,6 +67,17 @@ Não verificado na tela: CA-06 (a mensagem de atraso usa o mesmo caminho de
 alerta do CA-05 e está provada na API pelo teste `CA-06`), estado vazio de Meus
 empréstimos (provado na API pelo teste `CA-09`), fotos reais.
 
+## T08 — Crédito das fotos do Openverse (C5 da spec 002)
+
+- CAs: CA-02
+- Arquivos: `frontend/src/components/CreditoFotos.tsx` (substitui
+  `CreditoPexels.tsx`), `frontend/src/pages/CatalogoPage.tsx`,
+  `frontend/src/pages/MeusEmprestimosPage.tsx`, `frontend/src/styles/styles.css`,
+  `frontend/src/lib/api.ts`, `backend/src/emprestimos/emprestimos.service.ts`
+  (licença em `GET /emprestimos/meus`), `backend/test/solicitar-emprestimo.test.ts`.
+- Vem antes de T07 na ordem.
+- Estado: [ ] pendente.
+
 ## T07 — Produção (pessoa)
 
 - CAs: CA-01 a CA-11 em produção

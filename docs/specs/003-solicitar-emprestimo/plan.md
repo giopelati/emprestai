@@ -2,7 +2,8 @@
 
 ## Status
 
-Aprovado em 10/11/2026.
+Aprovado em 10/11/2026. Revisão do crédito na tela (T08, C5 da spec 002)
+aprovada por Giovanna Pelati em 11/11/2026.
 
 ## ADRs aplicáveis
 

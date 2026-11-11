@@ -2,7 +2,8 @@
 
 ## Status
 
-Aprovado em 10/11/2026.
+Aprovado em 10/11/2026. Revisão do C5 (fonte Openverse) aprovada por Giovanna
+Pelati em 11/11/2026.
 
 ## ADRs aplicáveis
 

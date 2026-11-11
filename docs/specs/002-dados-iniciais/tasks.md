@@ -30,6 +30,16 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
   `.gitignore`, `AGENTS.md`.
 - Estado: [x] concluída. `npm test --workspace backend`: 13 testes passaram após `npm run db:reset`.
 
+## T07 — Fonte Openverse (conflito C5)
+
+- CAs: CA-03, CA-04, CA-05
+- Arquivos: `skills/imagens-equipamentos/**`, `scripts/dados/popular.mjs`,
+  `package.json` (script `imagens:preparar`), `.env.example`,
+  `rules/secrets.md`, `backend/test/**`, `docs/producao/roteiro-pratica.md`.
+- A tela (link `Fotos: Openverse` e licença no `title`) é a T08 da spec 003.
+- Vem antes de T05 na ordem: T05 passa a usar o Openverse.
+- Estado: [ ] pendente.
+
 ## T05 — Fotos reais (pessoa)
 
 - CAs: CA-03, CA-04, CA-05
@@ -37,17 +47,6 @@ Cada tarefa cabe em um commit. Ordem obrigatória.
   repetir até 12 aprovadas → `npm run imagens:enviar` → commit de
   `supabase/dados/creditos-imagens.json` e `supabase/dados/imagens-rejeitadas.json`.
 - Estado: [ ] pendente — revisão humana (`npm run imagens:revisar`).
-
-## T07 — Fonte Openverse (conflito C5)
-
-- CAs: CA-03, CA-04, CA-05
-- Arquivos: `skills/imagens-equipamentos/**`, `.env.example`, `rules/secrets.md`,
-  `scripts/guardas/pre-commit.mjs`, `backend/test/**`,
-  `frontend/src/components/CreditoFotos.tsx` (substitui `CreditoPexels.tsx`),
-  `frontend/src/pages/CatalogoPage.tsx`, `frontend/src/pages/MeusEmprestimosPage.tsx`,
-  `frontend/src/styles/styles.css`.
-- Feita antes de T05, que passa a usar o Openverse.
-- Estado: [ ] pendente.
 
 ## T06 — Produção (pessoa)
 
