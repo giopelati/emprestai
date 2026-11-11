@@ -2,7 +2,7 @@
 
 ## Status
 
-Definida para planejamento.
+Implementada, com verificação pendente. CA-05, CA-06, CA-07, a restauração de sessão do CA-08 e CA-10 ainda não foram verificados em execução, porque dependem de Supabase local. Evidências em `tasks.md`.
 
 ## Referências
 

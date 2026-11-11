@@ -44,6 +44,8 @@ Confirme que:
 - a tarefa atual referencia pelo menos um critério de aceitação;
 - o código a alterar está dentro do escopo da tarefa atual.
 
+Para confirmar, execute `agents/verificador-spec.md` no modo `gate`.
+
 Se qualquer item estiver ausente, complete o fluxo documental antes de alterar
 código de aplicação.
 

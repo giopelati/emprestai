@@ -8,12 +8,33 @@
 
 ## Estado
 
+`[x]` significa que todos os checks aplicáveis foram executados, como exige `rules/checks.md`. Código implementado com verificação pendente fica em `[ ]`.
+
 - [x] T01 — Base React e apresentação responsiva do Login
-- [x] T02 — Validação e estados do formulário
-- [x] T03 — Autenticação e papel confiável
-- [x] T04 — Restauração, proteção e saída
-- [x] T05 — Verificação integrada e documentação operacional
+- [ ] T02 — Validação e estados do formulário (implementada; faltam CA-05 com Supabase local e e-mail inválido do CA-03 em execução)
+- [ ] T03 — Autenticação e papel confiável (implementada; faltam CA-06 e CA-07 com Supabase local)
+- [ ] T04 — Restauração, proteção e saída (implementada; faltam restauração do CA-08 e CA-10 com Supabase local)
+- [ ] T05 — Verificação integrada e documentação operacional (aguarda T02, T03 e T04)
 - [x] T06 — Login fixo na altura da janela
+
+## Evidências de verificação
+
+Executado em 05/11/2026, em `http://localhost:5199`, com `VITE_SUPABASE_URL` apontando para um endereço local inexistente. Nenhuma requisição foi feita ao Supabase remoto.
+
+| Critério | Resultado | Como foi verificado |
+|---|---|---|
+| CA-01 | Atendido | Sem sessão, o Login mostra marca, mensagem, estatísticas, campos, `Entrar`, orientação para Operações e nota de privacidade. |
+| CA-02 | Atendido | Sem rolagem horizontal em 375×812 e 768×1024; rótulos associados; `Tab` segue e-mail, senha e botão; foco visível em campo e botão. |
+| CA-03 | Parcial | Campos vazios: orientação nos dois campos, foco no e-mail e nenhuma requisição. E-mail com formato inválido: só leitura de código. |
+| CA-04 | Atendido | Durante o envio, campos e botão ficam desabilitados e o botão mostra `Entrando...`; clique duplo real gerou uma requisição. |
+| CA-05 | Não verificado | Depende de o Supabase recusar credenciais. Evidência só em leitura de código. |
+| CA-06, CA-07 | Não verificados | Dependem de usuários locais com `app_metadata.role`. Evidência só em leitura de código. |
+| CA-08 | Parcial | Sem sessão, o Login é exibido. A restauração de sessão válida não foi executada. |
+| CA-09 | Atendido | Com falha de rede, a tela permanece no Login e anuncia `Não foi possível entrar. Tente novamente.` em `role="alert"`. |
+| CA-10 | Não verificado | Depende de sessão autenticada. Evidência só em leitura de código. |
+| CA-11 | Atendido | Em 1366×560, 1366×640, 1280×720 e 1920×960, com erro de campo e com mensagem do formulário, `scrollHeight` é igual a `clientHeight` na página e nas duas colunas, e os elementos exigidos ficam dentro da janela. |
+
+Checks: `npm run typecheck`, `npm run build`, `npm run typecheck --workspace backend` e `npm run build --workspace backend` terminaram sem falha. Testes: `não executado: comando não documentado`.
 
 ## T01 — Base React e apresentação responsiva do Login
 
