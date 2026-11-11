@@ -6,8 +6,8 @@
   - Backend: https://github.com/giopelati/emprestai-backend
   - Frontend: https://github.com/giopelati/emprestai-frontend
   - Monorepo com specs, ADRs, rules, subagente, skill e histórico citado
-    abaixo: PENDENTE (repositório `emprestai` a criar; os hashes desta
-    entrega são deste repositório).
+    abaixo: https://github.com/giopelati/emprestai (os hashes desta entrega
+    são deste repositório).
 - Produção (Vercel):
   - Frontend: https://emprestai-frontend-roan.vercel.app
   - Backend: https://emprestai-backend.vercel.app (`GET /health`)
